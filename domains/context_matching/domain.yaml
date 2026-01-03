@@ -1,0 +1,43 @@
+id: context_matching
+name: Context Matching
+description: >
+  Universal principles for evaluating if landing page elements match the audience context.
+  Teaches HOW to evaluate fit—not what specific audiences want.
+  Works with external context (awareness level, traffic source, intent) provided by FunnelGenius.
+
+version: "1.0.0"
+
+tasks:
+  - id: awareness_matching
+    name: Awareness Level Matching
+    rubric: awareness-matching.md
+    categories:
+      - awareness_alignment
+
+  - id: traffic_matching
+    name: Traffic Source Matching
+    rubric: traffic-matching.md
+    categories:
+      - traffic_matching
+
+  - id: offer_matching
+    name: Offer-Audience Matching
+    rubric: offer-matching.md
+    categories:
+      - offer_fit
+      - awareness_alignment
+
+example_categories:
+  - awareness_alignment
+  - traffic_matching
+  - offer_fit
+
+token_budget:
+  principles: 1500
+  rubric: 2000
+  examples: 4000
+
+notes: |
+  This domain teaches RULES for matching, not what audiences want.
+  Actual audience context is provided by FunnelGenius at evaluation time.
+  Rubrics expect audience parameters as input, then evaluate fit.

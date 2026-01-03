@@ -1,0 +1,39 @@
+id: page_architecture
+name: Page Architecture
+description: >
+  Universal principles for structuring landing pages that convert.
+  Covers hero sections, visual hierarchy, page flow, and layout.
+  Teaches design mechanics independent of audience context.
+
+version: "1.0.0"
+
+tasks:
+  - id: hero_analysis
+    name: Hero Section Analysis
+    rubric: hero-evaluation.md
+    categories:
+      - hero_sections
+
+  - id: page_flow_analysis
+    name: Page Flow Analysis
+    rubric: page-flow-evaluation.md
+    categories:
+      - page_flow
+      - visual_hierarchy
+
+  - id: layout_analysis
+    name: Layout Analysis
+    rubric: layout-evaluation.md
+    categories:
+      - visual_hierarchy
+      - hero_sections
+
+example_categories:
+  - hero_sections
+  - visual_hierarchy
+  - page_flow
+
+token_budget:
+  principles: 1500
+  rubric: 2000
+  examples: 4000

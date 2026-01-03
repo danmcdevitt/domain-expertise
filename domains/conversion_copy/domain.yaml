@@ -1,0 +1,38 @@
+id: conversion_copy
+name: Conversion Copywriting
+description: >
+  Universal principles for writing persuasive copy that converts.
+  Covers headlines, CTAs, body copy, and fascinations.
+  Teaches craft mechanics independent of audience context.
+
+version: "1.0.0"
+
+tasks:
+  - id: headline_analysis
+    name: Headline Analysis
+    rubric: headline-evaluation.md
+    categories:
+      - headlines
+
+  - id: cta_analysis
+    name: CTA Analysis
+    rubric: cta-evaluation.md
+    categories:
+      - ctas
+
+  - id: body_copy_analysis
+    name: Body Copy Analysis
+    rubric: body-copy-evaluation.md
+    categories:
+      - body_copy
+      - headlines
+
+example_categories:
+  - headlines
+  - ctas
+  - body_copy
+
+token_budget:
+  principles: 1500
+  rubric: 2000
+  examples: 4000

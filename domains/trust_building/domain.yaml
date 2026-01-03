@@ -1,0 +1,38 @@
+id: trust_building
+name: Trust Building
+description: >
+  Universal principles for building credibility and reducing anxiety.
+  Covers testimonials, social proof, risk reversal, and authority signals.
+  Teaches trust mechanics independent of audience context.
+
+version: "1.0.0"
+
+tasks:
+  - id: testimonial_analysis
+    name: Testimonial Analysis
+    rubric: testimonial-evaluation.md
+    categories:
+      - testimonials
+
+  - id: social_proof_analysis
+    name: Social Proof Analysis
+    rubric: social-proof-evaluation.md
+    categories:
+      - social_proof
+      - testimonials
+
+  - id: risk_reversal_analysis
+    name: Risk Reversal Analysis
+    rubric: risk-reversal-evaluation.md
+    categories:
+      - risk_reversal
+
+example_categories:
+  - testimonials
+  - social_proof
+  - risk_reversal
+
+token_budget:
+  principles: 1500
+  rubric: 2000
+  examples: 4000

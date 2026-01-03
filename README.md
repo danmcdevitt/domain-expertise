@@ -44,6 +44,21 @@ expertise context my_domain task_name "query"
 
 ## Available Domains
 
+### Landing Page Domains (Specialized)
+
+These 4 domains cover all aspects of landing page evaluation:
+
+| Domain | Purpose | Principles | Rubrics | Examples |
+|--------|---------|------------|---------|----------|
+| conversion_copy | Headlines, CTAs, body copy craft | 5 | 3 | 4 |
+| page_architecture | Layout, flow, visual hierarchy | 5 | 3 | 2 |
+| trust_building | Testimonials, social proof, risk reversal | 5 | 3 | 2 |
+| context_matching | Audience fit, awareness alignment, traffic matching | 5 | 3 | 3 |
+
+**Key Separation:** The first 3 domains teach universal CRAFT principles (how to write/design). The `context_matching` domain teaches how to EVALUATE fit against audience context provided by FunnelGenius.
+
+### General Domains
+
 | Domain | Principles | Rubrics | Examples |
 |--------|------------|---------|----------|
 | copywriting | 5 | 1 | 4 |
@@ -85,32 +100,58 @@ export ANTHROPIC_API_KEY=sk-ant-...
 
 ```
 domains/
-├── copywriting/
-│   ├── domain.yaml           # Configuration
-│   ├── principles.md         # Core principles (Tier 1)
-│   ├── rubrics/              # Evaluation frameworks (Tier 2)
-│   │   └── headline-analysis.md
-│   ├── examples/             # Contrast examples (Tier 3)
-│   │   ├── headlines/
-│   │   │   └── contrast-001.md
-│   │   └── ctas/
-│   │       └── contrast-001.md
-│   └── frameworks/           # Deep reference (Tier 4)
-├── landing_pages/
+├── conversion_copy/          # CRAFT: Copy mechanics
 │   ├── domain.yaml
-│   ├── principles.md
+│   ├── principles.md         # Clarity, benefits, specificity
 │   ├── rubrics/
-│   │   └── page-audit.md
+│   │   ├── headline-evaluation.md
+│   │   ├── cta-evaluation.md
+│   │   └── body-copy-evaluation.md
 │   └── examples/
-│       ├── heroes/
-│       └── ctas/
-└── email_copy/
-    ├── domain.yaml
-    ├── principles.md
-    ├── rubrics/
-    │   └── subject-line-analysis.md
-    └── examples/
-        └── subject_lines/
+│       ├── headlines/
+│       ├── ctas/
+│       └── body_copy/
+│
+├── page_architecture/        # CRAFT: Design mechanics
+│   ├── domain.yaml
+│   ├── principles.md         # Single goal, slippery slide, hierarchy
+│   ├── rubrics/
+│   │   ├── hero-evaluation.md
+│   │   ├── page-flow-evaluation.md
+│   │   └── layout-evaluation.md
+│   └── examples/
+│       ├── hero_sections/
+│       ├── visual_hierarchy/
+│       └── page_flow/
+│
+├── trust_building/           # CRAFT: Credibility mechanics
+│   ├── domain.yaml
+│   ├── principles.md         # Specificity, placement, risk reversal
+│   ├── rubrics/
+│   │   ├── testimonial-evaluation.md
+│   │   ├── social-proof-evaluation.md
+│   │   └── risk-reversal-evaluation.md
+│   └── examples/
+│       ├── testimonials/
+│       ├── social_proof/
+│       └── risk_reversal/
+│
+├── context_matching/         # EVALUATION: Audience fit
+│   ├── domain.yaml
+│   ├── principles.md         # Message match, awareness, traffic temp
+│   ├── rubrics/
+│   │   ├── awareness-matching.md
+│   │   ├── traffic-matching.md
+│   │   └── offer-matching.md
+│   └── examples/
+│       ├── awareness_alignment/
+│       ├── traffic_matching/
+│       └── offer_fit/
+│
+└── [general domains...]
+    ├── copywriting/
+    ├── email_copy/
+    └── landing_pages/
 ```
 
 ## Usage in Code
