@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "domain-expertise"
+version = "0.1.0"
+description = "Portable domain expertise system for AI agents"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Dan McDevitt" }
+]
+dependencies = [
+    "anthropic>=0.40.0",
+    "openai>=1.0.0",
+    "supabase>=2.0.0",
+    "tiktoken>=0.5.0",
+    "PyMuPDF>=1.23.0",
+    "python-docx>=1.0.0",
+    "pyyaml>=6.0",
+    "click>=8.0.0",
+    "rich>=13.0.0",
+    "numpy>=1.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[project.scripts]
+expertise = "expertise.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/expertise"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/domains",
+]

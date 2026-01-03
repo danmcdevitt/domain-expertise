@@ -1,0 +1,30 @@
+# Domain Configuration: Copywriting
+id: copywriting
+name: Direct Response Copywriting
+description: Expertise in persuasive writing that drives action
+
+rubric_triggers:
+  headline_analysis:
+    - analyze headline
+    - review headline
+    - headline feedback
+    - grade headline
+  landing_page_audit:
+    - audit landing page
+    - review page
+    - page analysis
+    - landing page feedback
+  email_review:
+    - analyze email
+    - review email
+    - email feedback
+  cta_analysis:
+    - analyze cta
+    - review cta
+    - call to action
+
+example_categories:
+  - headlines
+  - ctas
+  - social_proof
+  - offers
