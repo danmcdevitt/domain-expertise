@@ -438,5 +438,202 @@ def context(ctx, domain, task, query, budget):
         console.print(f"STRONG: {ex.strong_content[:80]}...")
 
 
+@main.command()
+@click.argument("domain_id")
+@click.argument("domain_name")
+@click.option("--source", "-s", type=click.Path(exists=True), help="Path to source documents")
+@click.option("--tasks", "-t", multiple=True, help="Tasks for rubrics (can specify multiple)")
+@click.option("--categories", "-c", multiple=True, help="Example categories (can specify multiple)")
+@click.option("--examples", "-e", default=3, help="Examples per category")
+@click.pass_context
+def author(ctx, domain_id, domain_name, source, tasks, categories, examples):
+    """Create a new domain from source documents using AI.
+
+    This command uses Claude to analyze source documents and generate
+    a complete domain with principles, rubrics, and contrast examples.
+
+    Example:
+        expertise author copywriting "Direct Response Copywriting" -s ./sources/
+    """
+    from .authoring import DomainAuthoringAgent
+
+    domains_path = Path(ctx.obj["domains_path"])
+    output_path = domains_path / domain_id
+
+    if output_path.exists():
+        console.print(f"[red]Error: Domain '{domain_id}' already exists[/red]")
+        raise SystemExit(1)
+
+    # Check for API key
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        console.print("[red]Error: ANTHROPIC_API_KEY environment variable not set[/red]")
+        raise SystemExit(1)
+
+    agent = DomainAuthoringAgent()
+
+    def progress(msg):
+        console.print(f"[dim]{msg}[/dim]")
+
+    console.print(f"\n[bold]Creating domain: {domain_name}[/bold]\n")
+
+    try:
+        stats = agent.create_domain(
+            domain_id=domain_id,
+            domain_name=domain_name,
+            output_path=output_path,
+            source_path=source,
+            tasks=list(tasks) if tasks else None,
+            categories=list(categories) if categories else None,
+            examples_per_category=examples,
+            progress_callback=progress,
+        )
+    except Exception as e:
+        console.print(f"[red]Error: {e}[/red]")
+        raise SystemExit(1)
+
+    # Show results
+    console.print(f"\n[green]Domain '{domain_id}' created successfully![/green]")
+    console.print(f"\nTokens used: {stats['tokens_used']:,}")
+    console.print(f"Files created: {len(stats['files_created'])}")
+
+    table = Table(title="Created Files")
+    table.add_column("File", style="cyan")
+    for f in stats["files_created"]:
+        table.add_row(str(Path(f).relative_to(output_path.parent)))
+    console.print(table)
+
+    console.print(f"\n[dim]Next: Review and edit the generated files, then run:[/dim]")
+    console.print(f"  expertise validate {domain_id}")
+    console.print(f"  expertise index {domain_id}")
+
+
+@main.command()
+@click.argument("source_path", type=click.Path(exists=True))
+@click.option("--recursive/--no-recursive", default=True, help="Search subdirectories")
+def load(source_path, recursive):
+    """Load and preview source documents.
+
+    Use this to verify documents will be loaded correctly before authoring.
+    """
+    from .loaders import UnifiedLoader
+
+    loader = UnifiedLoader()
+    source_path = Path(source_path)
+
+    if source_path.is_dir():
+        docs = loader.load_directory(source_path, recursive=recursive)
+    else:
+        docs = loader.load(source_path)
+
+    console.print(f"\n[bold]Loaded {len(docs)} documents[/bold]\n")
+
+    table = Table(title="Documents")
+    table.add_column("Source", style="cyan", max_width=40)
+    table.add_column("Title", style="green", max_width=30)
+    table.add_column("Words", style="yellow", justify="right")
+    table.add_column("Section", style="dim", max_width=20)
+
+    for doc in docs[:20]:  # Limit display
+        source = Path(doc.source).name if doc.source != "text" else doc.source
+        table.add_row(
+            source,
+            doc.title or "-",
+            str(doc.word_count),
+            doc.section or "-",
+        )
+
+    console.print(table)
+
+    if len(docs) > 20:
+        console.print(f"\n[dim]... and {len(docs) - 20} more documents[/dim]")
+
+    total_words = sum(d.word_count for d in docs)
+    console.print(f"\n[bold]Total words:[/bold] {total_words:,}")
+    console.print(f"[bold]Estimated tokens:[/bold] ~{total_words * 1.3:,.0f}")
+
+
+@main.command()
+@click.argument("domain")
+@click.argument("content_type", type=click.Choice(["principle", "rubric", "example"]))
+@click.argument("output_file", type=click.Path())
+@click.option("--pattern", "-p", help="Pattern name (for examples)")
+@click.option("--task", "-t", help="Task name (for rubrics)")
+@click.option("--category", "-c", help="Category (for examples)")
+@click.pass_context
+def generate(ctx, domain, content_type, output_file, pattern, task, category):
+    """Generate a single piece of domain content.
+
+    Use this for adding individual pieces to an existing domain.
+
+    Examples:
+        expertise generate copywriting rubric email-analysis.md -t "Email Analysis"
+        expertise generate copywriting example contrast-005.md -p "Social proof" -c headlines
+    """
+    from .authoring import DomainAuthoringAgent
+
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        console.print("[red]Error: ANTHROPIC_API_KEY environment variable not set[/red]")
+        raise SystemExit(1)
+
+    agent = DomainAuthoringAgent()
+    domains_path = Path(ctx.obj["domains_path"])
+
+    # Load existing domain for context
+    engine = get_engine(ctx.obj["domains_path"])
+    try:
+        domain_obj = engine.load_domain(domain)
+    except ValueError as e:
+        console.print(f"[red]Error: {e}[/red]")
+        raise SystemExit(1)
+
+    # Get principles as context
+    principles_text = domain_obj.principles_path.read_text() if domain_obj.principles_path.exists() else ""
+    agent._current_analysis = f"Domain: {domain}\n\nPrinciples:\n{principles_text}"
+
+    console.print(f"[dim]Generating {content_type}...[/dim]")
+
+    if content_type == "rubric":
+        if not task:
+            console.print("[red]Error: --task is required for rubrics[/red]")
+            raise SystemExit(1)
+        result = agent.extract_rubric(task)
+
+    elif content_type == "example":
+        if not pattern:
+            console.print("[red]Error: --pattern is required for examples[/red]")
+            raise SystemExit(1)
+        if not category:
+            category = "general"
+
+        example_id = f"{category}-{Path(output_file).stem}"
+        result = agent.extract_contrast_example(
+            pattern=pattern,
+            domain=domain,
+            category=category,
+            example_id=example_id,
+            tags=[category, domain],
+        )
+
+    else:  # principle
+        result = agent.extract_principles(domain_obj.config.get("name", domain))
+
+    # Write output
+    output_path = Path(output_file)
+    if not output_path.is_absolute():
+        # Put in appropriate subdirectory
+        if content_type == "rubric":
+            output_path = domains_path / domain / "rubrics" / output_file
+        elif content_type == "example":
+            output_path = domains_path / domain / "examples" / (category or "general") / output_file
+        else:
+            output_path = domains_path / domain / output_file
+
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(result.content)
+
+    console.print(f"[green]Created: {output_path}[/green]")
+    console.print(f"Tokens used: {result.tokens_used:,}")
+
+
 if __name__ == "__main__":
     main()

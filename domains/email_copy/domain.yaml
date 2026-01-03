@@ -1,0 +1,23 @@
+# Domain Configuration: Email Copy
+id: email_copy
+name: Email Marketing Copy
+description: Expertise in high-converting email subject lines and body copy
+
+rubric_triggers:
+  subject_line_analysis:
+    - analyze subject line
+    - review subject
+    - subject line feedback
+  email_review:
+    - analyze email
+    - review email
+    - email feedback
+  sequence_analysis:
+    - analyze sequence
+    - review email sequence
+    - sequence feedback
+
+example_categories:
+  - subject_lines
+  - body_copy
+  - sequences

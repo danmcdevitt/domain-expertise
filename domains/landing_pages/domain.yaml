@@ -1,0 +1,30 @@
+# Domain Configuration: Landing Pages
+id: landing_pages
+name: Landing Page Optimization
+description: Expertise in high-converting landing page design and copy
+
+rubric_triggers:
+  hero_analysis:
+    - analyze hero
+    - review hero section
+    - hero feedback
+  page_audit:
+    - audit landing page
+    - review page
+    - page analysis
+    - landing page feedback
+  cta_analysis:
+    - analyze cta
+    - review call to action
+    - cta feedback
+  social_proof_review:
+    - analyze social proof
+    - review testimonials
+    - testimonial feedback
+
+example_categories:
+  - heroes
+  - ctas
+  - social_proof
+  - forms
+  - objection_handling
